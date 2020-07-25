@@ -7,22 +7,34 @@ const Status = require('../../../models/status');
 //register a new patient based on phone number 
 module.exports.register = async function(req,res){
     
-    try{        
-        let patient =  await Patient.findOne({phone: req.body.phone},{createdAt:0,updatedAt:0,__v:0});
-        if(patient){
+    try{
+        // console.log(req.body);
+        // console.log(req.body.phone);
+        if(req.body.phone === undefined){
+            console.log(req.body.phone);
             return res.json(500,{
-                message: "Patient is already register with id:  "+patient._id,
-                patient:  patient      
+                message: "Phone number is missing, please retry"    
             });
+            
         }
-        else{
-            patient= await Patient.create(req.body);
-            patient = await Patient.findById(patient._id,{createdAt:0,updatedAt:0,__v:0});
-            return res.json(200,{
-                message: "New Patient registered with id:" +patient._id,
-                patient_details:  patient        
-            });
+        else{            
+            let patient =  await Patient.findOne({phone: req.body.phone},{createdAt:0,updatedAt:0,__v:0});
+            if(patient){
+                return res.json(500,{
+                    message: "Patient is already register with id:  "+patient._id,
+                    patient:  patient      
+                });
+            }
+            else{
+                patient= await Patient.create(req.body);
+                patient = await Patient.findById(patient._id,{createdAt:0,updatedAt:0,__v:0});
+                return res.json(200,{
+                    message: "New Patient registered with id:" +patient._id,
+                    patient_details:  patient        
+                });
+            }
         }
+        
         
     }
     catch(err){

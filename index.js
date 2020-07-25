@@ -7,6 +7,7 @@ const passportJWT = require('./config/passport-jwt-stratergy');
 
 
 app.use(express.urlencoded());
+app.use(express.json());
 
 //use the assets folder for static files 
 app.use(express.static('./assets'));
@@ -23,3 +24,4 @@ app.listen(port,function(err){
     
     console.log('Server is up and running at port:', port);
 });
+module.exports = app;
