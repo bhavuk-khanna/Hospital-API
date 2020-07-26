@@ -1,13 +1,9 @@
 //During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
-const mongoose = require("mongoose");
 const Patient = require('../models/patient');
 const Doctor = require('../models/doctor');
 const jwt = require('jsonwebtoken'); 
-
-
 const chai = require('chai');
-const assert = chai.assert;
 const chaiHttp = require('chai-http');
 const server = require('../index');
 const should = chai.should();
@@ -40,24 +36,24 @@ describe('Patients', () => {
   }
   
 describe('/patients/register', () => {
-      // it('it should not register a patient without phone number', (done) => {
-      // 	let patient = {
-      //     name: "J.R.R. Tolkien",
-      //     age: "40",
-      //     sex: "female"
-      // 	}
-      // 	chai.request(server)
-      //     .post('/api/v1/patients/register')
-      //     .send(patient)
-      //     .set({ "Authorization": `Bearer ${token}` })
-      //     .end((err, res) => {
-      //       console.log(res.body);
-      // 	  	res.should.have.status(500);
-      // 	  	res.body.should.be.a('object');
-      // 	  	res.body.should.have.property('message').equal("Phone number is missing, please retry");
-      //       done();
-      //     });
-      // });
+      it('it should not register a patient without phone number', (done) => {
+      	let patient = {
+          name: "J.R.R. Tolkien",
+          age: "40",
+          sex: "female"
+      	}
+      	chai.request(server)
+          .post('/api/v1/patients/register')
+          .send(patient)
+          .set({ "Authorization": `Bearer ${token}` })
+          .end((err, res) => {
+            
+      	  	res.should.have.status(500);
+      	  	res.body.should.be.a('object');
+      	  	res.body.should.have.property('message').equal("Phone number is missing, please retry");
+            done();
+          });
+      });
       try{
         it('it should not register a patient with a phone already registered', async() => {
           let patient1 =  new Patient({
@@ -80,7 +76,7 @@ describe('/patients/register', () => {
           
           res.should.have.status(500);
           res.body.should.have.property('message').includes("Patient is already register");
-          console.log(res.body);
+          
             
   
         });
@@ -91,30 +87,30 @@ describe('/patients/register', () => {
       }
       
 
-      // it('it should register a new patient ', (done) => {
-      //   let patient = {
-      //     phone: "91021891121",
-      //     name: "J.R.R. Tolkien",
-      //     age: "40",
-      //     sex: "female"
-      //   }
-      //   chai.request(server)
-      //     .post('/api/v1/patients/register')
-      //     .set({ "Authorization": `Bearer ${token}` })
-      //     .send(patient)
-      //     .end((err, res) => {
+      it('it should register a new patient when all mandatory details are present and phone number is unique', (done) => {
+        let patient = {
+          phone: "91021891121",
+          name: "J.R.R. Tolkien",
+          age: "40",
+          sex: "female"
+        }
+        chai.request(server)
+          .post('/api/v1/patients/register')
+          .set({ "Authorization": `Bearer ${token}` })
+          .send(patient)
+          .end((err, res) => {
 
-      //       res.should.have.status(200);
-      //       res.body.should.be.a('object');
-      //       res.body.should.have.property('message').includes("New Patient registered");
-      //       res.body.patient_details.should.have.property('_id');
-      //       res.body.patient_details.should.have.property('phone');
-      //       res.body.patient_details.should.have.property('name');
-      //       res.body.patient_details.should.have.property('age');
-      //       res.body.patient_details.should.have.property('sex');
-      //       done();
-      //     });
-      // });
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message').includes("New Patient registered");
+            res.body.patient_details.should.have.property('_id');
+            res.body.patient_details.should.have.property('phone');
+            res.body.patient_details.should.have.property('name');
+            res.body.patient_details.should.have.property('age');
+            res.body.patient_details.should.have.property('sex');
+            done();
+          });
+      });
     });
 
 

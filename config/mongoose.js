@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const Status = require('../models/status');
 let config = require('config');
-let options = { 
-    server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
-    replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } 
-  }; 
+// let options = { 
+//     server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
+//     replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } 
+//   }; 
 
-mongoose.connect(config.DBHost, options);
+mongoose.connect(config.DBHost);
 
 const db = mongoose.connection;
 
