@@ -7,12 +7,9 @@ const Status = require('../../../models/status');
 //register a new patient based on phone number 
 module.exports.register = async function(req,res){
     
-    try{
-        // console.log(req.body);
-        // console.log(req.body.phone);
-        if(req.body.phone === undefined){
-            console.log(req.body.phone);
-            return res.json(500,{
+    try{        
+        if(req.body.phone === undefined){            
+            return res.status(500).json({
                 message: "Phone number is missing, please retry"    
             });
             
@@ -20,7 +17,7 @@ module.exports.register = async function(req,res){
         else{            
             let patient =  await Patient.findOne({phone: req.body.phone},{createdAt:0,updatedAt:0,__v:0});
             if(patient){
-                return res.json(500,{
+                return res.status(500).json({
                     message: "Patient is already register with id:  "+patient._id,
                     patient:  patient      
                 });
@@ -28,7 +25,7 @@ module.exports.register = async function(req,res){
             else{
                 patient= await Patient.create(req.body);
                 patient = await Patient.findById(patient._id,{createdAt:0,updatedAt:0,__v:0});
-                return res.json(200,{
+                return res.status(200).json({
                     message: "New Patient registered with id:" +patient._id,
                     patient_details:  patient        
                 });
@@ -39,7 +36,7 @@ module.exports.register = async function(req,res){
     }
     catch(err){
         console.log(err);
-        return res.json(500,{
+        return res.status(500).json({
             message: "Error in registering the Patient",        
         })
     }
@@ -53,7 +50,7 @@ module.exports.createReport = async function(req,res){
         //doctor can be found using req.user.id
         let doctor = await Doctor.findById(req.user.id);
         if(!doctor){
-            return res.json(500,{
+            return res.status(500).json({
                 message: "Error in finding doctor's account, Please login again"        
             });
         }
@@ -62,7 +59,7 @@ module.exports.createReport = async function(req,res){
         
 
         if(!patient){
-            return res.json(500,{
+            return res.status(500).json({
                 message: "Error in finding patient, please make sure that the pateint is registered"        
             });
         }
@@ -95,7 +92,7 @@ module.exports.createReport = async function(req,res){
     }
     catch(err){
         console.log(err);
-        return res.json(500,{
+        return res.status(500).json({
             message: "Error in creating a new report for the Patient",        
         })
     }
@@ -110,7 +107,7 @@ module.exports.allReports = async function(req,res){
         //patient can be found from req.param.id
         let patient = await Patient.findById(req.params.id);
         if(!patient){
-            return res.json(500,{
+            return res.status(500).json({
                 message: "Error in finding the patient",        
             })
         }
@@ -122,11 +119,11 @@ module.exports.allReports = async function(req,res){
         .populate('doctor',{_id:0,username:0,password: 0,updatedAt:0,createdAt:0,__v:0})
         .populate('patient',{_id:0,updatedAt:0,createdAt:0,__v:0})
 
-        return res.json(200,{reports: reports});
+        return res.status(200).json({reports: reports});
     }
     catch(err){
         console.log(err);
-        return res.json(500,{
+        returnres.status(500).json({
             message: "Error in fetching the reports!",        
         })
     }

@@ -6,7 +6,7 @@ const passport = require('passport');
 const passportJWT = require('./config/passport-jwt-stratergy');
 
 
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 //use the assets folder for static files 

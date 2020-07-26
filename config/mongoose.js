@@ -6,7 +6,7 @@ let config = require('config');
 //     replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } 
 //   }; 
 
-mongoose.connect(config.DBHost);
+mongoose.connect(config.DBHost, {useNewUrlParser: true, useUnifiedTopology: true} );
 
 const db = mongoose.connection;
 
