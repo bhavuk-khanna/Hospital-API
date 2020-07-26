@@ -2,6 +2,8 @@
 process.env.NODE_ENV = 'test';
 const mongoose = require("mongoose");
 const Patient = require('../models/patient');
+const Doctor = require('../models/doctor');
+const jwt = require('jsonwebtoken'); 
 
 
 const chai = require('chai');
@@ -10,16 +12,33 @@ const chaiHttp = require('chai-http');
 const server = require('../index');
 const should = chai.should();
 const baseUrl = 'http://localhost:8000';
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjBjODk2N2FiNGIyZjM1Njg4ZjU0MmIiLCJ1c2VybmFtZSI6ImRyX3NhbHVua2UiLCJuYW1lIjoiRHIuIFIuIFAuIFNhbHVua2hlXG4iLCJkZXBhcnRtZW50IjoiRm9yZW5zaWNzIiwiX192IjowLCJpYXQiOjE1OTU2NzA0MjgsImV4cCI6MTU5NTg0MzIyOH0.ChyffzkWg-hUCts5q70GlZQtysPRTXQlf7PUv2ZFTn8';
+let token = '';
 chai.use(chaiHttp);
 
 //Our parent block
 describe('Patients', () => {
-	beforeEach((done) => { //Before each test we empty the database
-		Patient.remove({}, (err) => { 
-		   done();		   
-		});		
-  });
+  try{
+    beforeEach(async() => { 
+      //Before each test we empty the database
+      await Patient.remove({});
+      await Doctor.remove({});
+      // register a doctor and  to used for testing
+      let doctor = {
+        username: "dr_salunke",
+        password: "12345",
+        name: "Dr. R. P. Salunkhe",
+        department: "Forensics"
+      }
+      doctor= await Doctor.create(doctor);
+      token = await jwt.sign( doctor.toObject(), 'random_string',{
+        expiresIn: '2 days'
+       });
+    });
+  }
+  catch(err){
+    console.log(err);
+  }
+  
 describe('/patients/register', () => {
       // it('it should not register a patient without phone number', (done) => {
       // 	let patient = {
