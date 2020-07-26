@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 const Status = require('../models/status');
-mongoose.connect('mongodb://localhost/Hospital_API');
+let config = require('config');
+let options = { 
+    server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
+    replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } 
+  }; 
 
+mongoose.connect(config.DBHost, options);
 
 const db = mongoose.connection;
 

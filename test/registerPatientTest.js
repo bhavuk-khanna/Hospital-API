@@ -21,48 +21,81 @@ describe('Patients', () => {
 		});		
   });
 describe('/patients/register', () => {
-      it('it should not register a patient without phone number', (done) => {
-      	let patient = {
-          name: "J.R.R. Tolkien",
-          age: "40",
-          sex: "female"
-      	}
-      	chai.request(server)
-          .post('/api/v1/patients/register')
-          .send(patient)
-          .set({ "Authorization": `Bearer ${token}` })
-          .end((err, res) => {
-            console.log(res.body);
-      	  	res.should.have.status(500);
-      	  	res.body.should.be.a('object');
-      	  	res.body.should.have.property('message').equal("Phone number is missing, please retry");
-            done();
+      // it('it should not register a patient without phone number', (done) => {
+      // 	let patient = {
+      //     name: "J.R.R. Tolkien",
+      //     age: "40",
+      //     sex: "female"
+      // 	}
+      // 	chai.request(server)
+      //     .post('/api/v1/patients/register')
+      //     .send(patient)
+      //     .set({ "Authorization": `Bearer ${token}` })
+      //     .end((err, res) => {
+      //       console.log(res.body);
+      // 	  	res.should.have.status(500);
+      // 	  	res.body.should.be.a('object');
+      // 	  	res.body.should.have.property('message').equal("Phone number is missing, please retry");
+      //       done();
+      //     });
+      // });
+      try{
+        it('it should not register a patient with a phone already registered', async() => {
+          let patient1 =  new Patient({
+            phone: "91021891121",
+            name: "J.R.R. Tolkien",
+            age: "40",
+            sex: "female"
           });
-      });
-      it('it should register a new patient ', (done) => {
-        let patient = {
-          phone: "91021891121",
-          name: "J.R.R. Tolkien",
-          age: "40",
-          sex: "female"
-        }
-        chai.request(server)
+          await patient1.save();
+          let patient2 =  {
+            phone: "91021891121",
+            name: "J.R.R. Tolkien",
+            age: "40",
+            sex: "female"
+          };
+          let res =  await chai.request(server)
           .post('/api/v1/patients/register')
-          .set({ "Authorization": `Bearer ${token}` })
-          .send(patient)
-          .end((err, res) => {
+          .send(patient2)
+          .set({ "Authorization": `Bearer ${token}` });      
+          
+          res.should.have.status(500);
+          res.body.should.have.property('message').includes("Patient is already register");
+          console.log(res.body);
+            
+  
+        });
 
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.should.have.property('message').includes("New Patient registered");
-            res.body.patient_details.should.have.property('_id');
-            res.body.patient_details.should.have.property('phone');
-            res.body.patient_details.should.have.property('name');
-            res.body.patient_details.should.have.property('age');
-            res.body.patient_details.should.have.property('sex');
-            done();
-          });
-      });
+      }
+      catch(err){
+        console.log(err);
+      }
+      
+
+      // it('it should register a new patient ', (done) => {
+      //   let patient = {
+      //     phone: "91021891121",
+      //     name: "J.R.R. Tolkien",
+      //     age: "40",
+      //     sex: "female"
+      //   }
+      //   chai.request(server)
+      //     .post('/api/v1/patients/register')
+      //     .set({ "Authorization": `Bearer ${token}` })
+      //     .send(patient)
+      //     .end((err, res) => {
+
+      //       res.should.have.status(200);
+      //       res.body.should.be.a('object');
+      //       res.body.should.have.property('message').includes("New Patient registered");
+      //       res.body.patient_details.should.have.property('_id');
+      //       res.body.patient_details.should.have.property('phone');
+      //       res.body.patient_details.should.have.property('name');
+      //       res.body.patient_details.should.have.property('age');
+      //       res.body.patient_details.should.have.property('sex');
+      //       done();
+      //     });
+      // });
     });
 
 
