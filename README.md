@@ -29,6 +29,8 @@ npm install
 6. input the command `npm start` on terminal
 
 7. Use your browser or Postman to interact with the API
+8. input the command `npm test` to run the unit tests defined in the test folder
+
 
 # Routes Present
 - /doctors/register 
