@@ -14,6 +14,8 @@ const baseUrl = 'http://localhost:8000';
 let token = '';
 chai.use(chaiHttp);
 
+
+// generates random number of  reports (max: 5), after each after a timeout passed
 async function createReportwithTimeout(doctor,patient,timeout){
     //generates random number between 1 to 5
     let numReports =  Math.floor(Math.random() * 5)+1;
@@ -41,6 +43,8 @@ async function createReportwithTimeout(doctor,patient,timeout){
      
 }
 
+
+// generates random number of  reports (max: 5)
 async function createReport(doctor, patient){
     //generates random number between 1 to 5
     let numReports =  Math.floor(Math.random() * 5)+1;    
@@ -127,7 +131,7 @@ describe('Patients', () => {
         }
         //Test 3
         try{
-            it('it should have only reports correspoding to the patient id in url', async() => {
+            it('it should have only return reports correspoding to the patient id in url', async() => {
                 //register patient1 
                 let patient1 =  new Patient({
                     phone: "1234567890",

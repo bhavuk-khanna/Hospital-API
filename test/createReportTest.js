@@ -50,11 +50,7 @@ describe('Patients', () => {
             .set({ "Authorization": `Bearer ${token}` });      
             res.should.have.status(500);
             res.body.should.have.property('message').includes("Error in finding patient");
-            
-            
-            
-
-        });
+          });
 
         }
         catch(err){
