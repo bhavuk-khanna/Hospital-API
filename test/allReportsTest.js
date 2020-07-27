@@ -9,18 +9,45 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const crypto = require('crypto');
 const server = require('../index');
-const { Console } = require('console');
 const should = chai.should();
 const baseUrl = 'http://localhost:8000';
 let token = '';
 chai.use(chaiHttp);
 
+async function createReportwithTimeout(doctor,patient,timeout){
+    //generates random number between 1 to 5
+    let numReports =  Math.floor(Math.random() * 5)+1;
+    for(let i=0;i<numReports;i++){
+        //creates a report with random status after a random timeout
+        await function runAfterTimout(){
+            return new Promise( function(resolve, reject) {             
+                setTimeout( resolve, timeout);
+            }).then(
+                    async function(){
+                        let status = Math.floor(Math.random() * 4);
+                        status = await Status.findOne({code: status});
+                        let report = await Report.create({
+                            status: status  ,
+                            doctor: doctor,
+                            patient: patient,
+                            Date: new Date().toDateString(),
+                            Time: new Date().toTimeString()
+                        });
+                    }
+                );
+        }(doctor,patient,timeout);
+        
+    }   
+     
+}
+
 async function createReport(doctor, patient){
-    let numReports =  Math.floor(Math.random() * 11);
+    //generates random number between 1 to 5
+    let numReports =  Math.floor(Math.random() * 5)+1;    
     for(let i=0;i<numReports;i++){
         let status = Math.floor(Math.random() * 4);
         status = await Status.findOne({code: status});
-        let report = await Report.create({
+        await Report.create({
             status: status  ,
             doctor: doctor,
             patient: patient,
@@ -28,7 +55,6 @@ async function createReport(doctor, patient){
             Time: new Date().toTimeString()
         });
     }
-    
 }
 
 //Our parent block
@@ -57,48 +83,48 @@ describe('Patients', () => {
   }
   
     describe('/patients/:id/all_reports', (doctor) => {    
-        // //Test 1
-        // try{
-        // it('it should not return any reports if pateint id in url is not registered', async() => {
-        //     let id  =  crypto.randomBytes(12).toString('hex');                    
-        //     let res =  await chai.request(baseUrl)
-        //     .get(`/api/v1/patients/${id}/all_reports`)            
-        //     .set({ "Authorization": `Bearer ${token}` });      
-        //     res.should.have.status(500);
-        //     res.body.should.have.property('message').includes("Error in finding the patient");
-        // });
+        //Test 1
+        try{
+        it('it should not return any reports if pateint id in url is not registered', async() => {
+            let id  =  crypto.randomBytes(12).toString('hex');                    
+            let res =  await chai.request(baseUrl)
+            .get(`/api/v1/patients/${id}/all_reports`)            
+            .set({ "Authorization": `Bearer ${token}` });      
+            res.should.have.status(500);
+            res.body.should.have.property('message').includes("Error in finding the patient");
+        });
 
-        // }
-        // catch(err){
-        // console.log(err);
-        // }
-        // //Test 2
-        // try{
-        // it('it should return all the reports correspoding to the patient id in url', async() => {
-        //     //register a patient 
-        //     let patient =  new Patient({
-        //         phone: "1234567890",
-        //         name: "Test Patient 1",
-        //         age: "36",
-        //         sex: "male"
-        //     });
-        //     patient = await patient.save();             
-        //     //create a random number of reports for pateint  (max 10)
-        //     await createReport(doctor,patient);
-        //     let numreportsfromDb = await (await Report.find({patient: patient})).length;            
-        //     let res =  await chai.request(baseUrl)
-        //      .get(`/api/v1/patients/${patient._id}/all_reports`)            
-        //      .set({ "Authorization": `Bearer ${token}` });
-        //     res.should.have.status(200);
-        //     res.body.should.have.property('reports');
-        //     res.body.reports.length.should.be.eql(numreportsfromDb);
+        }
+        catch(err){
+        console.log(err);
+        }
+        //Test 2
+        try{
+        it('it should return all the reports correspoding to the patient id in url', async() => {
+            //register a patient 
+            let patient =  new Patient({
+                phone: "1234567890",
+                name: "Test Patient 1",
+                age: "36",
+                sex: "male"
+            });
+            patient = await patient.save();             
+            //create a random number of reports for pateint  (max 10)
+            await createReport(doctor,patient);
+            let numreportsfromDb = await (await Report.find({patient: patient})).length;            
+            let res =  await chai.request(baseUrl)
+             .get(`/api/v1/patients/${patient._id}/all_reports`)            
+             .set({ "Authorization": `Bearer ${token}` });
+            res.should.have.status(200);
+            res.body.should.have.property('reports');
+            res.body.reports.length.should.be.eql(numreportsfromDb);
             
-        // });
+        });
 
-        // }
-        // catch(err){
-        // console.log(err);
-        // }
+        }
+        catch(err){
+        console.log(err);
+        }
         //Test 3
         try{
             it('it should have only reports correspoding to the patient id in url', async() => {
@@ -145,31 +171,38 @@ describe('Patients', () => {
 
         //Test 4
         try{
-            it('it should return  ', async() => {
+            it('it should return reports in order oldest to newest', async() => {
     
-                let patient =  new Patient({
-                    phone: "91021891121",
-                    name: "J.R.R. Tolkien",
-                    age: "40",
-                    sex: "female"
-                });
-                patient = await patient.save(); 
-                let status = Math.floor(Math.random() * 4);
-                let res =  await chai.request(baseUrl)
-                .post(`/api/v1/patients/${patient._id}/create_report`)
-                .send({status: status})
-                .set({ "Authorization": `Bearer ${token}` });      
-                res.should.have.status(200);
-                res.body.should.have.property('status');
-                res.body.should.have.property('doctor');
-                res.body.should.have.property('patient');
-                res.body.should.have.property('Date');
+               //register a patient 
+            let patient =  new Patient({
+                 phone: "1234567890",
+                 name: "Test Patient 1",
+                 age: "36",
+                sex: "male"
             });
+            patient = await patient.save();            
+            
+            //generates a random timeout between 1 to 1.5 sec
+            let timeout = Math.random() * (500)+1000;
+            // creates random number of reports(max:5) after timeout seconds
+            await createReportwithTimeout(doctor,patient, timeout);
+            let res =  await chai.request(baseUrl)
+            .get(`/api/v1/patients/${patient._id}/all_reports`)            
+            .set({ "Authorization": `Bearer ${token}` });
+            res.should.have.status(200);
+            res.body.should.have.property('reports');
+            let prevDate = new Date(-8640000000000000);           
+            for(report of res.body.reports){                
+                let reportDate= new Date(report.createdAt);
+                reportDate.should.be.gt(prevDate);
+                prevDate = reportDate;
+            }
+        });
     
-            }
-            catch(err){
-            console.log(err);
-            }
+        }
+        catch(err){
+        console.log(err);
+        }
     });
     
 

@@ -113,7 +113,7 @@ module.exports.allReports = async function(req,res){
         }
 
         let reports = await Report
-        .find({patient: patient},{_id:0,updatedAt:0,__v:0,createdAt:0})
+        .find({patient: patient},{_id:0,updatedAt:0,__v:0})
         .sort('createdAt')
         .populate('status',{_id:0})
         .populate('doctor',{_id:0,username:0,password: 0,updatedAt:0,createdAt:0,__v:0})

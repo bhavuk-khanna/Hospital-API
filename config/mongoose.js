@@ -46,7 +46,7 @@ Status.findOne({code:0},function (err, status){
             };
             
         });
-        new Status({ code: '3',name:' Positive-Admit' }).save(function (err) {
+        new Status({ code: '3',name:'Positive-Admit' }).save(function (err) {
             if (err){
                 console.log(err);
             };

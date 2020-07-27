@@ -29,6 +29,9 @@ Doctors can log in and each time a patient visits, the doctor will follow 2 step
 - /reports/:status 
    → List all the reports of all the patients filtered by a specific status.
 
+# Unit Tests 
+
+
 
 ## Setting up the project
 1. Clone at your local system.
