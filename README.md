@@ -30,7 +30,14 @@ Doctors can log in and each time a patient visits, the doctor will follow 2 step
    → List all the reports of all the patients filtered by a specific status.
 
 # Unit Tests 
-
+1. Unit Tests for route: `/patients/register`
+   - 
+2. Unit Tests for route: `/patients/:id/create_report`
+   1. it should not create a report if pateint id in url is not registered
+   2. it should not create a report if status code is missing
+   3. it should not create a report if status code is invalid
+   4. it should create a report successfully if status is valid and patient id is registered 
+3. Unit Tests for route: `/patients/:id/all_reports`
 
 
 ## Setting up the project
