@@ -65,10 +65,11 @@ npm install
 
 ## Directory Structure 
 The Directory strutcure follows a MVC design pattern with each folder serving a specific purpose making it easily maintainable as well as scalable.
--`/assest` - Folder for static files
--`/config` - Folder for all config files used for setting up the project.
--`/routes` - Folder for all route files, correspoding to each URL the client may use
--`/models` - Folder for all DB schema files
--`/controller` - Folder for all the modules responsible for processing data, each file containing all the functions for the corresponding route
--`/test` -  Folder for all the unit tests
+
+- `/assest` - Folder for static files
+- `/config` - Folder for all config files used for setting up the project.
+- `/routes` - Folder for all route files, correspoding to each URL the client may use
+- `/models` - Folder for all DB schema files
+- `/controller` - Folder for all the modules responsible for processing data, each file containing all the functions for the corresponding route
+- `/test` -  Folder for all the unit tests
 
